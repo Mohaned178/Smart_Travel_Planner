@@ -55,7 +55,7 @@ public class OpenTripMapPlacesClient : IPlacesClient
         {
             var url = string.Create(CultureInfo.InvariantCulture,
                 $"/radius?radius={radiusMeters}&lon={coordinates.Longitude}&lat={coordinates.Latitude}" +
-                $"&kinds={kinds}&rate=2&limit=50&apikey={_apiKey}");
+                $"&kinds={kinds}&limit=50&apikey={_apiKey}");
 
             var results = await _http.GetFromJsonAsync<OpenTripMapFeature[]>(url, ct);
             if (results is null || results.Length == 0)

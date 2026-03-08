@@ -16,9 +16,9 @@ obj/
 *.sln.docstates
 
 # User Secrets & Environment
-# appsettings.Development.json
-# *.env
-# *.env.*
+appsettings.Development.json
+*.env
+*.env.*
 
 # OS
 .DS_Store
