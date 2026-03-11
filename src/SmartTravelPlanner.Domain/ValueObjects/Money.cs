@@ -1,8 +1,5 @@
 namespace SmartTravelPlanner.Domain.ValueObjects;
 
-/// <summary>
-/// Represents a monetary amount with a specific currency.
-/// </summary>
 public sealed record Money(decimal Amount, string CurrencyCode)
 {
     public Money Add(Money other)

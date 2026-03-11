@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: smartplanner-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: SmartPlanner
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smartplanner-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=SmartPlanner;Username=postgres;Password=${DB_PASSWORD:-postgres123}"
+      ExternalApis__OpenWeather__ApiKey: ${OPENWEATHER_API_KEY}
+      ExternalApis__GooglePlaces__ApiKey: ${GOOGLE_PLACES_API_KEY}
+      ExternalApis__OpenRouteService__ApiKey: ${ORS_API_KEY}
+      Jwt__Secret: ${JWT_SECRET}
+      Cors__AllowedOrigins__0: ${CORS_ORIGIN:-http://localhost:3000}
+
+volumes:
+  pgdata:

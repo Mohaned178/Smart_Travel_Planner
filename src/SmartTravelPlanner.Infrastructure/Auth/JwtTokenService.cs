@@ -7,9 +7,6 @@ using SmartTravelPlanner.Application.Interfaces;
 
 namespace SmartTravelPlanner.Infrastructure.Auth;
 
-/// <summary>
-/// Generates and validates JWT bearer tokens.
-/// </summary>
 public class JwtTokenService : IJwtTokenService
 {
     private readonly IConfiguration _config;

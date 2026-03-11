@@ -1,8 +1,5 @@
 namespace SmartTravelPlanner.Application.DTOs;
 
-/// <summary>
-/// Application-layer DTO for itinerary generation request validation.
-/// </summary>
 public record GenerateItineraryCommand
 {
     public string CityName { get; init; } = string.Empty;

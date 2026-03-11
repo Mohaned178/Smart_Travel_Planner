@@ -1,11 +1,7 @@
 namespace SmartTravelPlanner.Domain.Entities;
 
-/// <summary>
-/// Cached place data from OpenTripMap. Used internally to avoid repeated API calls.
-/// </summary>
 public class Place
 {
-    /// <summary>OpenTripMap external ID (xid).</summary>
     public string ExternalId { get; set; } = string.Empty;
 
     public string Name { get; set; } = string.Empty;
@@ -20,6 +16,6 @@ public class Place
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
 
-    /// <summary>UTC timestamp when this entry was cached.</summary>
     public DateTime CachedAt { get; set; } = DateTime.UtcNow;
+    public List<string> AllTypes { get; set; } = [];
 }

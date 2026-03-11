@@ -8,13 +8,24 @@
 
 ## ✨ Key Features
 
-- 🗺️ **Personalized Itineraries**: Generate 1–14 day plans based on target city, budget, and a catalog of interests.
-- 🌦️ **Weather-Aware Planning**: Intelligence engine that schedules outdoor activities on clear days and prioritizes indoor locations during rain or extreme heat.
-- 🏎️ **Route Optimization**: Uses geographic data to sequence activities efficiently, minimizing travel time and distance.
-- 💰 **Budget Management**: Integrated cost estimation with real-time currency conversion for global travel.
-- 🍽️ **Dining Suggestions**: Optional curated restaurant recommendations integrated into the daily schedule.
-- 🔒 **Secure User Accounts**: JWT-based authentication for saving, retrieving, and managing private itineraries.
-- 📉 **Cost Breakdown**: Detailed reporting of spending per category (activities, dining, transport) and per day.
+- 🗺️ **Personalized Itineraries**: Generate 1–14 day plans based on target city, budget, and an expanded catalog of interests.
+- 🌦️ **Weather-Aware Planning**: Intelligence engine that schedules outdoor activities on clear days and prioritizes indoor locations (museums, cafes, galleries) during rainy weather.
+- 🏎️ **Route Optimization**: Uses geographic data and distance matrices to sequence activities efficiently, minimizing travel time.
+- 💰 **Budget Management**: Integrated cost estimation that automatically enforces budget limits by prioritizing higher-rated activities and adjusting dining tiers.
+- 🍽️ **Dining & Activity Deduplication**: Smart logic that ensures a location is never suggested as both an activity and a restaurant in the same plan.
+- 📍 **Intelligent Filtering**: Automatically excludes forbidden categories (bars, gas stations, transit) and enforces a 5km geographic radius from the city center.
+- 📈 **Guaranteed Activity Density**: Ensure at least 3 high-quality activities per day through automated "top-up" logic if primary interests are limited.
+
+---
+
+## 🧩 Itinerary Generation Details
+
+The generation engine uses advanced logic to ensure realistic and high-quality plans:
+
+- **Interest Mapping**: Maps human-friendly interests (e.g., `history`, `nature`, `art`) to specific Google Place Types (e.g., `tourist_attraction`, `park`, `art_gallery`).
+- **Realistic Durations**: Assigns visit times based on category (e.g., 150m for Museums, 90m for Landmarks).
+- **Schedule Recalculation**: Automatically adjusts activity start and end times after every filtering step (budget, weather, proximity).
+- **Supported Interests**: `museums`, `parks`, `food`, `nightlife`, `shopping`, `history`, `landmarks`, `adventure`, `beaches`, `art`, `nature`.
 
 ---
 
@@ -24,8 +35,8 @@
 - **Architecture**: Domain-Driven Design (DDD) & Clean Architecture
 - **Database**: PostgreSQL with Entity Framework Core
 - **External API Integrations**:
-  - **OpenTripMap**: Discovery of places and landmarks.
-  - **Open-Meteo**: High-resolution weather forecasting.
+  - **Google Places API**: Discovery of places, landmarks, and dining.
+  - **OpenWeather API**: High-resolution weather forecasting.
   - **Nominatim (OSM)**: Geocoding and location resolution.
   - **OpenRouteService**: Distance and travel time calculations.
   - **Frankfurter**: Real-time currency exchange rates.
@@ -106,6 +117,21 @@ Once the application is running, you can explore the API using Swagger UI at:
 - `POST /api/itineraries/generate` - Generate a new travel plan.
 - `GET /api/itineraries/{id}` - Retrieve a saved itinerary.
 - `GET /api/health` - Check system and dependency status.
+- `GET /api/itineraries/history` - Retrieve a user's recent generation history.
+
+#### Example Generation Request
+
+```json
+{
+  "cityName": "Paris",
+  "totalBudget": 1500.0,
+  "currencyCode": "EUR",
+  "durationDays": 2,
+  "interests": ["museums", "history", "nature"],
+  "includeRestaurants": true,
+  "tripStartDate": "2026-06-20T09:00:00Z"
+}
+```
 
 ---
 

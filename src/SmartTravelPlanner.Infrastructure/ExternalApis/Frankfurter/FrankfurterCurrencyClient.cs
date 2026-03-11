@@ -15,7 +15,9 @@ public class FrankfurterCurrencyClient : ICurrencyClient
     {
         _http = http;
         _logger = logger;
-        _http.BaseAddress = new Uri(config["ExternalApis:Frankfurter:BaseUrl"] ?? "https://api.frankfurter.dev");
+        var baseUrl = config["ExternalApis:Frankfurter:BaseUrl"] ?? "https://api.frankfurter.app/";
+        if (!baseUrl.EndsWith('/')) baseUrl += "/";
+        _http.BaseAddress = new Uri(baseUrl);
     }
 
     public async Task<decimal?> GetExchangeRateAsync(string fromCurrency, string toCurrency, CancellationToken ct = default)
@@ -28,7 +30,7 @@ public class FrankfurterCurrencyClient : ICurrencyClient
         try
         {
             var response = await _http.GetFromJsonAsync<FrankfurterResponse>(
-                $"/latest?from={fromCurrency.ToUpperInvariant()}&to={toCurrency.ToUpperInvariant()}", ct);
+                $"latest?from={fromCurrency.ToUpperInvariant()}&to={toCurrency.ToUpperInvariant()}", ct);
 
             if (response?.Rates is null || !response.Rates.TryGetValue(toCurrency.ToUpperInvariant(), out var rate))
             {

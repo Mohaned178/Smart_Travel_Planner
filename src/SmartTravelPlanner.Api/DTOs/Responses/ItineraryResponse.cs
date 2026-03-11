@@ -56,6 +56,7 @@ public record ActivitySlotResponse
     public int VisitDurationMinutes { get; init; }
     public decimal? TravelTimeFromPrevMinutes { get; init; }
     public decimal? TravelDistanceFromPrevKm { get; init; }
+    public string? TransportMode { get; init; }
 }
 
 public record RestaurantResponse
@@ -66,6 +67,7 @@ public record RestaurantResponse
     public CoordinatesDto Coordinates { get; init; } = new();
     public decimal? DistanceFromActivityKm { get; init; }
     public decimal EstimatedMealCost { get; init; }
+    public string? MealTime { get; init; }
 }
 
 public record CostBreakdownResponse

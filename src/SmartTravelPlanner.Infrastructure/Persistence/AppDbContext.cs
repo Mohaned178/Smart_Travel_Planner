@@ -5,9 +5,6 @@ using SmartTravelPlanner.Domain.Entities;
 
 namespace SmartTravelPlanner.Infrastructure.Persistence;
 
-/// <summary>
-/// Application database context extending IdentityDbContext for user management.
-/// </summary>
 public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public DbSet<Itinerary> Itineraries => Set<Itinerary>();
@@ -53,7 +50,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             e.Property(i => i.Category).IsRequired().HasMaxLength(50);
             e.Property(i => i.DisplayName).IsRequired().HasMaxLength(100);
 
-            // Seed predefined interest catalog
             e.HasData(
                 new Interest { Id = 1, Name = "museums", Category = "cultural", DisplayName = "Museums" },
                 new Interest { Id = 2, Name = "parks", Category = "natural", DisplayName = "Parks & Gardens" },

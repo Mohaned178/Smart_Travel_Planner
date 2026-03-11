@@ -6,9 +6,6 @@ using Microsoft.Extensions.Logging;
 
 namespace SmartTravelPlanner.Api.Middleware;
 
-/// <summary>
-/// Catches unhandled exceptions and returns RFC 7807 Problem Details.
-/// </summary>
 public class GlobalExceptionMiddleware
 {
     private readonly RequestDelegate _next;
@@ -40,7 +37,7 @@ public class GlobalExceptionMiddleware
             ArgumentException => (int)HttpStatusCode.BadRequest,
             KeyNotFoundException => (int)HttpStatusCode.NotFound,
             UnauthorizedAccessException => (int)HttpStatusCode.Forbidden,
-            OperationCanceledException => 499, // Client closed request
+            OperationCanceledException => 499,
             _ => (int)HttpStatusCode.InternalServerError
         };
 

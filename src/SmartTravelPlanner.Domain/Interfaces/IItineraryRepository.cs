@@ -2,9 +2,6 @@ using SmartTravelPlanner.Domain.Entities;
 
 namespace SmartTravelPlanner.Domain.Interfaces;
 
-/// <summary>
-/// Repository for CRUD operations on Itinerary entities.
-/// </summary>
 public interface IItineraryRepository
 {
     Task<Itinerary?> GetByIdAsync(Guid id, CancellationToken ct = default);

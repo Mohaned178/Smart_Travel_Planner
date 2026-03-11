@@ -19,7 +19,9 @@ public class NominatimGeocodingClient : IGeocodingClient
     {
         _http = http;
         _logger = logger;
-        _http.BaseAddress = new Uri(config["ExternalApis:Nominatim:BaseUrl"] ?? "https://nominatim.openstreetmap.org");
+        var baseUrl = config["ExternalApis:Nominatim:BaseUrl"] ?? "https://nominatim.openstreetmap.org/";
+        if (!baseUrl.EndsWith('/')) baseUrl += "/";
+        _http.BaseAddress = new Uri(baseUrl);
         _http.DefaultRequestHeaders.Add("User-Agent", config["ExternalApis:Nominatim:UserAgent"] ?? "SmartTravelPlanner/1.0");
     }
 
@@ -30,7 +32,7 @@ public class NominatimGeocodingClient : IGeocodingClient
         _logger.LogInformation("Geocoding city: {CityName}", cityName);
 
         var response = await _http.GetFromJsonAsync<NominatimResult[]>(
-            $"/search?q={Uri.EscapeDataString(cityName)}&format=json&limit=1&addressdetails=1", ct);
+            $"search?q={Uri.EscapeDataString(cityName)}&format=json&limit=1&addressdetails=1", ct);
 
         var result = response?.FirstOrDefault();
         if (result is null)

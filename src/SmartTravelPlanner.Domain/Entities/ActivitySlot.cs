@@ -1,8 +1,5 @@
 namespace SmartTravelPlanner.Domain.Entities;
 
-/// <summary>
-/// A time-bound activity within a day, ordered by route-optimized sequence.
-/// </summary>
 public class ActivitySlot
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -21,8 +18,10 @@ public class ActivitySlot
     public int VisitDurationMinutes { get; set; }
     public decimal? TravelTimeFromPrevMinutes { get; set; }
     public decimal? TravelDistanceFromPrevKm { get; set; }
+
+    public string? TransportMode { get; set; }
+
     public string? ExternalPlaceId { get; set; }
 
-    // Navigation
     public DayPlan DayPlan { get; set; } = null!;
 }

@@ -1,10 +1,5 @@
 namespace SmartTravelPlanner.Domain.Entities;
 
-/// <summary>
-/// Budget utilization summary for an entire itinerary.
-/// Invariant: GrandTotal = TotalActivitiesCost + TotalDiningCost + TotalTransportCost.
-/// Invariant: GrandTotal ≤ TotalBudget (from parent Itinerary).
-/// </summary>
 public class CostBreakdown
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -19,7 +14,6 @@ public class CostBreakdown
     // Navigation
     public Itinerary Itinerary { get; set; } = null!;
 
-    /// <summary>Validates the cost breakdown invariants.</summary>
     public bool IsValid()
     {
         var expectedGrandTotal = TotalActivitiesCost + TotalDiningCost + TotalTransportCost;

@@ -16,7 +16,6 @@ public class PlacesCacheRepository : IPlacesCacheRepository
         var place = await _db.Places.FindAsync([externalId], ct);
         if (place is null) return null;
 
-        // Check staleness — 7 day cache
         if (DateTime.UtcNow - place.CachedAt > TimeSpan.FromDays(StaleDays))
             return null;
 

@@ -18,13 +18,13 @@ public class CostCalculationServiceTests
     [Fact]
     public void CalculateCostBreakdown_DistributesBudget_SumsCorrectly()
     {
-        // Arrange
+        
         var itinerary = CreateItinerary(budget: 500, days: 3);
 
-        // Act
+        
         var result = _sut.CalculateCostBreakdown(itinerary, 0.50m);
 
-        // Assert
+        
         result.GrandTotal.Should().Be(result.TotalActivitiesCost + result.TotalDiningCost + result.TotalTransportCost);
         result.RemainingBudget.Should().Be(Math.Max(0, 500 - result.GrandTotal));
     }
@@ -32,13 +32,13 @@ public class CostCalculationServiceTests
     [Fact]
     public void CalculateCostBreakdown_GrandTotalWithinBudget()
     {
-        // Arrange
+        
         var itinerary = CreateItinerary(budget: 500, days: 2);
 
-        // Act
+        
         var result = _sut.CalculateCostBreakdown(itinerary, 0.50m);
 
-        // Assert
+        
         result.GrandTotal.Should().BeLessThanOrEqualTo(500);
         result.RemainingBudget.Should().BeGreaterThanOrEqualTo(0);
     }
@@ -46,13 +46,13 @@ public class CostCalculationServiceTests
     [Fact]
     public void CalculateCostBreakdown_PerDayCosts_SumToCategories()
     {
-        // Arrange
+        
         var itinerary = CreateItinerary(budget: 1000, days: 3, activitiesPerDay: 4);
 
-        // Act
+        
         var result = _sut.CalculateCostBreakdown(itinerary, 0.50m);
 
-        // Assert
+        
         var dailyTotalsSum = itinerary.DayPlans.Sum(dp => dp.DailyCostTotal);
         dailyTotalsSum.Should().Be(result.GrandTotal);
     }
@@ -60,13 +60,12 @@ public class CostCalculationServiceTests
     [Fact]
     public void CalculateCostBreakdown_RemainingBudget_NeverNegative()
     {
-        // Arrange - budget less than costs
         var itinerary = CreateItinerary(budget: 10, days: 3, activityCost: 100);
 
-        // Act
+        
         var result = _sut.CalculateCostBreakdown(itinerary, 0.50m);
 
-        // Assert
+        
         result.RemainingBudget.Should().BeGreaterThanOrEqualTo(0);
     }
 

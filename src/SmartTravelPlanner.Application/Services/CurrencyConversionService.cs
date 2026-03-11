@@ -10,9 +10,6 @@ public interface ICurrencyConversionService
     Task<decimal?> GetRateAsync(string fromCurrency, string toCurrency, CancellationToken ct = default);
 }
 
-/// <summary>
-/// Converts amounts using ICurrencyClient; falls back to source currency + notice per FR-018.
-/// </summary>
 public class CurrencyConversionService : ICurrencyConversionService
 {
     private readonly ICurrencyClient _currencyClient;

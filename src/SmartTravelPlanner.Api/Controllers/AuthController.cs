@@ -12,7 +12,6 @@ public class AuthController : ControllerBase
 
     public AuthController(IAuthService authService) => _authService = authService;
 
-    /// <summary>Register a new user account.</summary>
     [HttpPost("register")]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -32,7 +31,6 @@ public class AuthController : ControllerBase
         return CreatedAtAction(nameof(Register), response);
     }
 
-    /// <summary>Login and receive a JWT access token.</summary>
     [HttpPost("login")]
     [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -3,9 +3,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace SmartTravelPlanner.Infrastructure.Caching;
 
-/// <summary>
-/// Wraps IMemoryCache with configurable TTLs from appsettings.
-/// </summary>
 public class InMemoryCacheService
 {
     private readonly IMemoryCache _cache;

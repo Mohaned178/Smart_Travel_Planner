@@ -10,11 +10,12 @@ public interface ICostCalculationService
     decimal EstimateTransportCost(decimal totalDistanceKm, decimal ratePerKm);
 }
 
-/// <summary>
-/// Budget distribution and cost breakdown computation per FR-005, FR-011.
-/// </summary>
 public class CostCalculationService : ICostCalculationService
 {
+    private const decimal MetroFlatFare = 2.50m;
+    private const decimal TaxiBaseFare = 3.00m;
+    private const decimal TaxiPerKmRate = 2.00m;
+
     private readonly ILogger<CostCalculationService> _logger;
 
     public CostCalculationService(ILogger<CostCalculationService> logger)
@@ -39,7 +40,12 @@ public class CostCalculationService : ICostCalculationService
                 dayActivityCost += activity.EstimatedCostUser;
 
                 if (activity.TravelDistanceFromPrevKm.HasValue)
-                    dayTransportCost += EstimateTransportCost(activity.TravelDistanceFromPrevKm.Value, transportRatePerKm);
+                {
+                    dayTransportCost += EstimateTransportCostByMode(
+                        activity.TravelDistanceFromPrevKm.Value,
+                        activity.TransportMode,
+                        transportRatePerKm);
+                }
             }
 
             foreach (var restaurant in dayPlan.Restaurants)
@@ -67,6 +73,17 @@ public class CostCalculationService : ICostCalculationService
             GrandTotal = grandTotal,
             RemainingBudget = Math.Max(0, remaining),
             CurrencyCode = itinerary.CurrencyCode
+        };
+    }
+
+    private static decimal EstimateTransportCostByMode(decimal distanceKm, string? transportMode, decimal fallbackRatePerKm)
+    {
+        return transportMode switch
+        {
+            "Walking" => 0m,
+            "Metro" => MetroFlatFare,
+            "Taxi" => Math.Round(TaxiBaseFare + distanceKm * TaxiPerKmRate, 2),
+            _ => Math.Round(distanceKm * fallbackRatePerKm, 2)
         };
     }
 

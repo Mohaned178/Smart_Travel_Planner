@@ -1,8 +1,5 @@
 namespace SmartTravelPlanner.Domain.ValueObjects;
 
-/// <summary>
-/// Represents a time window within a single day.
-/// </summary>
 public sealed record TimeSlot
 {
     public TimeOnly Start { get; }

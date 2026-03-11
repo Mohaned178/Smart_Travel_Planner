@@ -1,8 +1,5 @@
 namespace SmartTravelPlanner.Domain.Entities;
 
-/// <summary>
-/// Top-level trip plan entity. Aggregate root for the itinerary bounded context.
-/// </summary>
 public class Itinerary
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -18,10 +15,8 @@ public class Itinerary
     public DateTime TripStartDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    /// <summary>Draft or Saved.</summary>
     public string Status { get; set; } = "Draft";
 
-    // Navigation properties
     public User User { get; set; } = null!;
     public ICollection<DayPlan> DayPlans { get; set; } = new List<DayPlan>();
     public CostBreakdown? CostBreakdown { get; set; }

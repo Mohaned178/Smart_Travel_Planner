@@ -1,13 +1,7 @@
 namespace SmartTravelPlanner.Domain.ValueObjects;
 
-/// <summary>
-/// Represents a geographic location with latitude and longitude.
-/// </summary>
 public sealed record Coordinates(decimal Latitude, decimal Longitude)
 {
-    /// <summary>
-    /// Calculates the Haversine (great-circle) distance in kilometres between two coordinates.
-    /// </summary>
     public decimal DistanceToKm(Coordinates other)
     {
         const double earthRadiusKm = 6371.0;

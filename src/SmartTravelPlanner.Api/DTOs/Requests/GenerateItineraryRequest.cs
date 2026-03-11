@@ -1,8 +1,5 @@
 namespace SmartTravelPlanner.Api.DTOs.Requests;
 
-/// <summary>
-/// Request DTO for generating a personalized travel itinerary.
-/// </summary>
 public record GenerateItineraryRequest
 {
     public string CityName { get; init; } = string.Empty;

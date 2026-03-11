@@ -3,15 +3,12 @@ using SmartTravelPlanner.Application.DTOs;
 
 namespace SmartTravelPlanner.Application.Validators;
 
-/// <summary>
-/// Validates GenerateItineraryCommand per FR-001, FR-013.
-/// </summary>
 public class GenerateItineraryCommandValidator : AbstractValidator<GenerateItineraryCommand>
 {
     private static readonly HashSet<string> ValidInterests = new(StringComparer.OrdinalIgnoreCase)
     {
         "museums", "parks", "food", "nightlife", "shopping",
-        "history", "landmarks", "adventure", "beaches", "art"
+        "history", "landmarks", "adventure", "beaches", "art", "nature"
     };
 
     public GenerateItineraryCommandValidator()

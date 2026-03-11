@@ -11,9 +11,6 @@ using SmartTravelPlanner.Infrastructure.Persistence;
 
 namespace SmartTravelPlanner.Api.Controllers;
 
-/// <summary>
-/// Manages itinerary generation, saving, retrieval, and deletion.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -36,7 +33,6 @@ public class ItinerariesController : ControllerBase
         _dbContext = dbContext;
     }
 
-    /// <summary>Get the predefined interest catalog (public, no auth).</summary>
     [HttpGet("interests")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -52,7 +48,6 @@ public class ItinerariesController : ControllerBase
         return Ok(new { interests });
     }
 
-    /// <summary>Generate a personalized travel itinerary.</summary>
     [HttpPost("generate")]
     [ProducesResponseType(typeof(ItineraryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -97,7 +92,6 @@ public class ItinerariesController : ControllerBase
         return Ok(MapToResponse(result.Itinerary, result.Notices));
     }
 
-    /// <summary>Save a draft itinerary to the user's account.</summary>
     [HttpPost("{id:guid}/save")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -117,7 +111,6 @@ public class ItinerariesController : ControllerBase
         return Ok(new { itineraryId = id, status = "Saved", message = "Itinerary saved successfully." });
     }
 
-    /// <summary>List all saved itineraries for the authenticated user.</summary>
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedResponse<ItinerarySummaryResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
@@ -148,7 +141,6 @@ public class ItinerariesController : ControllerBase
         });
     }
 
-    /// <summary>Retrieve an itinerary by ID.</summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ItineraryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -165,7 +157,6 @@ public class ItinerariesController : ControllerBase
         return Ok(MapToResponse(itinerary, []));
     }
 
-    /// <summary>Delete a saved itinerary.</summary>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -244,7 +235,8 @@ public class ItinerariesController : ControllerBase
                     EstimatedCost = a.EstimatedCostUser,
                     VisitDurationMinutes = a.VisitDurationMinutes,
                     TravelTimeFromPrevMinutes = a.TravelTimeFromPrevMinutes,
-                    TravelDistanceFromPrevKm = a.TravelDistanceFromPrevKm
+                    TravelDistanceFromPrevKm = a.TravelDistanceFromPrevKm,
+                    TransportMode = a.TransportMode
                 }).ToList(),
                 Restaurants = dp.Restaurants.Select(r => new RestaurantResponse
                 {
@@ -253,7 +245,8 @@ public class ItinerariesController : ControllerBase
                     CuisineType = r.CuisineType,
                     Coordinates = new CoordinatesDto { Latitude = r.Latitude, Longitude = r.Longitude },
                     DistanceFromActivityKm = r.DistanceFromActivityKm,
-                    EstimatedMealCost = r.EstimatedMealCost
+                    EstimatedMealCost = r.EstimatedMealCost,
+                    MealTime = r.MealTime?.ToString("HH:mm")
                 }).ToList()
             }).ToList()
         };

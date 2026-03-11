@@ -12,7 +12,6 @@ public class HealthController : ControllerBase
     public HealthController(HealthCheckService healthCheckService)
         => _healthCheckService = healthCheckService;
 
-    /// <summary>Overall service health status.</summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]

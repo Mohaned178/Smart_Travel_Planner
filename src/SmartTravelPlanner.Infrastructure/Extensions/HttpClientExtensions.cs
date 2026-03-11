@@ -5,15 +5,8 @@ using Polly.Extensions.Http;
 
 namespace SmartTravelPlanner.Infrastructure.Extensions;
 
-/// <summary>
-/// Polly resilience policies for external API HttpClients.
-/// </summary>
 public static class HttpClientExtensions
 {
-    /// <summary>
-    /// Adds standard resilience policies: retry with exponential backoff,
-    /// circuit breaker, and timeout.
-    /// </summary>
     public static IHttpClientBuilder AddResiliencePolicies(this IHttpClientBuilder builder)
     {
         return builder

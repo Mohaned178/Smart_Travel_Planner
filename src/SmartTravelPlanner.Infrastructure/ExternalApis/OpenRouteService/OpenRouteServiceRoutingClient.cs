@@ -22,7 +22,9 @@ public class OpenRouteServiceRoutingClient : IRoutingClient
         _logger = logger;
         _apiKey = config["ExternalApis:OpenRouteService:ApiKey"] ?? "";
         _profile = config["ExternalApis:OpenRouteService:Profile"] ?? "driving-car";
-        _http.BaseAddress = new Uri(config["ExternalApis:OpenRouteService:BaseUrl"] ?? "https://api.openrouteservice.org");
+        var baseUrl = config["ExternalApis:OpenRouteService:BaseUrl"] ?? "https://api.openrouteservice.org/";
+        if (!baseUrl.EndsWith('/')) baseUrl += "/";
+        _http.BaseAddress = new Uri(baseUrl);
     }
 
     public async Task<DistanceMatrixResult> GetDistanceMatrixAsync(IReadOnlyList<Coordinates> locations, CancellationToken ct = default)
@@ -46,7 +48,7 @@ public class OpenRouteServiceRoutingClient : IRoutingClient
             _http.DefaultRequestHeaders.Clear();
             _http.DefaultRequestHeaders.Add("Authorization", _apiKey);
 
-            var response = await _http.PostAsync($"/v2/matrix/{_profile}", content, ct);
+            var response = await _http.PostAsync($"v2/matrix/{_profile}", content, ct);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadFromJsonAsync<OrsMatrixResponse>(cancellationToken: ct);
@@ -55,8 +57,6 @@ public class OpenRouteServiceRoutingClient : IRoutingClient
                 _logger.LogWarning("Distance matrix returned null response");
                 return new DistanceMatrixResult([], []);
             }
-
-            // Convert distances from meters to km, durations from seconds to minutes
             var distancesKm = result.Distances?.Select(row =>
                 row.Select(d => d / 1000m).ToArray()).ToArray() ?? [];
             var durationsMin = result.Durations?.Select(row =>

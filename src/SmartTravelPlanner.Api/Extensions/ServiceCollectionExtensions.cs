@@ -12,11 +12,11 @@ using SmartTravelPlanner.Domain.Interfaces;
 using SmartTravelPlanner.Infrastructure.Auth;
 using SmartTravelPlanner.Infrastructure.Caching;
 using SmartTravelPlanner.Infrastructure.Extensions;
+using SmartTravelPlanner.Infrastructure.ExternalApis.GooglePlaces;
 using SmartTravelPlanner.Infrastructure.ExternalApis.Frankfurter;
 using SmartTravelPlanner.Infrastructure.ExternalApis.Nominatim;
-using SmartTravelPlanner.Infrastructure.ExternalApis.OpenMeteo;
+using SmartTravelPlanner.Infrastructure.ExternalApis.OpenWeather;
 using SmartTravelPlanner.Infrastructure.ExternalApis.OpenRouteService;
-using SmartTravelPlanner.Infrastructure.ExternalApis.OpenTripMap;
 using SmartTravelPlanner.Infrastructure.Persistence;
 using SmartTravelPlanner.Infrastructure.Persistence.Repositories;
 
@@ -26,11 +26,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
-        // Database
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
 
-        // Identity
         services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
             options.Password.RequireDigit = true;
@@ -43,7 +41,6 @@ public static class ServiceCollectionExtensions
         .AddEntityFrameworkStores<AppDbContext>()
         .AddDefaultTokenProviders();
 
-        // JWT Authentication
         var jwtSecret = config["Jwt:Secret"] ?? throw new InvalidOperationException("JWT Secret not configured");
         services.AddAuthentication(options =>
         {
@@ -64,36 +61,44 @@ public static class ServiceCollectionExtensions
             };
         });
 
-        // Auth services
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
 
-        // Application services
         services.AddScoped<ICurrencyConversionService, CurrencyConversionService>();
         services.AddScoped<ICostCalculationService, CostCalculationService>();
         services.AddScoped<IItineraryGenerationService, ItineraryGenerationService>();
 
-        // FluentValidation
         services.AddValidatorsFromAssemblyContaining<GenerateItineraryCommandValidator>();
 
-        // Repositories
         services.AddScoped<IItineraryRepository, ItineraryRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPlacesCacheRepository, PlacesCacheRepository>();
 
-        // Caching
         services.AddMemoryCache();
         services.AddSingleton<InMemoryCacheService>();
 
-        // External API HttpClients with Polly resilience
         services.AddHttpClient<IGeocodingClient, NominatimGeocodingClient>()
             .AddResiliencePolicies();
         services.AddHttpClient<ICurrencyClient, FrankfurterCurrencyClient>()
             .AddResiliencePolicies();
-        services.AddHttpClient<IWeatherClient, OpenMeteoWeatherClient>()
+        services.AddHttpClient<IWeatherClient, OpenWeatherClient>(client =>
+        {
+            var baseUrl = config["ExternalApis:OpenWeather:BaseUrl"];
+            if (!string.IsNullOrEmpty(baseUrl))
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }
+        })
             .AddResiliencePolicies();
-        services.AddHttpClient<IPlacesClient, OpenTripMapPlacesClient>()
-            .AddResiliencePolicies();
+        services.AddHttpClient<IPlacesClient, GooglePlacesClient>(client =>
+        {
+            var baseUrl = config["ExternalApis:GooglePlaces:BaseUrl"];
+            if (!string.IsNullOrEmpty(baseUrl))
+            {
+                client.BaseAddress = new Uri(baseUrl);
+            }
+        })
+        .AddResiliencePolicies();
         services.AddHttpClient<IRoutingClient, OpenRouteServiceRoutingClient>()
             .AddResiliencePolicies();
 
